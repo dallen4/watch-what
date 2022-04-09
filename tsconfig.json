@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./src",
+        "target": "esnext",
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
+        "esModuleInterop": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+        "paths": {
+            "@atoms/*": ["atoms/*"],
+            "@lib/*": ["lib/*"],
+            "@assets/*": ["assets/*"],
+            "@components/*": ["components/*"],
+            "@utils/*": ["utils/*"],
+            "@config/*": ["config/*"],
+            "@hookform/*": ["node_modules/@hookform/*"]
+        },
+        "incremental": true
+    },
+    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.mdx"],
+    "exclude": ["node_modules"]
+}
