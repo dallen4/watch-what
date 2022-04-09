@@ -6,7 +6,7 @@ export default async function search(
     req: SearchRequest,
     res: NextApiResponse,
 ) {
-    if (req.method !== 'GET') {
+    if (req.method !== 'POST') {
         res.status(405).end();
         return;
     }
