@@ -20,13 +20,18 @@ export type SortDirection = 'asc' | 'desc';
 export const SortOptions = ['Relevance', 'Popularity', 'Release Date', 'Title'];
 
 export type SearchInput = {
-    query: string;
+    query?: string;
     sources: number[];
+    types: string[];
     genres: number[];
     sort_by: SortBy;
 };
 
 export type SearchRequest = ApiRequest<SearchInput>;
+
+export type SearchResult = {
+    titles: Title[];
+};
 
 export type Source = {
     id: number;
@@ -45,6 +50,16 @@ export type Genre = {
     name: string;
     tmdb_id: number;
 };
+
+export type TitleType = 'movie' | 'tv_series' | 'tv_special' | 'tv_miniseries' | 'short_film';
+
+export const TitleTypes = [
+    'Movie',
+    'TV Series',
+    'TV Special',
+    'TV Mini-Series',
+    'Short Film',
+];
 
 export type Title = {
     id: number;

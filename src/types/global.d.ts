@@ -9,3 +9,5 @@ declare module '*.md';
 interface Window {
     GA_ANALYTICS: boolean;
 }
+
+declare module 'imdb-light';
