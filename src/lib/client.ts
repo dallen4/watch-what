@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SearchInput, Title } from 'types/general';
+import { SearchInput, SearchResult } from 'types/general';
 
 export const client = axios.create({
     baseURL: 'https://api.watchmode.com',
@@ -19,13 +19,15 @@ export const getGenres = async () => {
 };
 
 export const searchTitles = async (options: SearchInput) => {
-    const { query, sources, genres, sort_by } = options;
+    const { query, sources, types, genres, sort_by } = options;
 
-    const response = await client.get<{ titles: Title[] }>('/v1/list-titles/', {
+    const response = await client.get<SearchResult>('/v1/list-titles/', {
         params: {
             source_ids: sources.join(','),
             genres: genres.join(','),
+            types: types.join(','),
             sort_by,
+            regions: 'US',
         },
     });
 
