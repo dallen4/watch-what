@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Box, Button, CssBaseline, ThemeProvider } from '@material-ui/core';
+import { AppBar, Box, Button, CssBaseline, ThemeProvider, Typography } from '@material-ui/core';
 import { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import { SnackbarProvider } from 'notistack';
@@ -62,23 +62,19 @@ export default function MyApp(props: AppProps) {
                             backgroundColor: 'inherit',
                             position: 'relative',
                             border: 0,
-                            padding: theme.spacing(3, 4),
+                            padding: theme.spacing(4, 4),
                             display: 'flex',
                             flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'flex-start',
+                            justifyContent: 'center',
+                            alignItems: 'center',
                         }}
                     >
+                        <div>
                         <BrandLogo />
-                        <Button
-                            size={'small'}
-                            variant={'outlined'}
-                            color={'primary'}
-                            component={'a'}
-                            href={'mailto:me@nieky.info'}
-                        >
-                            Contact
-                        </Button>
+                        <Typography color={'secondary'}>
+                            For what to watch when you're tired of switching apps.
+                        </Typography>
+                        </div>
                     </AppBar>
                     <Component {...pageProps} />
                     <Footer />
