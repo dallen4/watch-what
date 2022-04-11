@@ -1,4 +1,5 @@
 import { NextApiRequest } from 'next';
+import { IMDbTitle } from './imdb';
 
 export type ApiRequest<Data = any> = Omit<NextApiRequest, 'body'> & {
     body: Data;
@@ -17,7 +18,7 @@ export enum SortBy {
 
 export type SortDirection = 'asc' | 'desc';
 
-export const SortOptions = ['Relevance', 'Popularity', 'Release Date', 'Title'];
+export const SortOptions = ['Popularity', 'Relevance', 'Release Date', 'Title'];
 
 export type SearchInput = {
     query?: string;
@@ -30,7 +31,7 @@ export type SearchInput = {
 export type SearchRequest = ApiRequest<SearchInput>;
 
 export type SearchResult = {
-    titles: Title[];
+    titles: TitleWithDetails[];
 };
 
 export type Source = {
@@ -69,4 +70,8 @@ export type Title = {
     tmdb_id?: number;
     tmdb_type?: 'movie';
     type: 'movie';
+};
+
+export type TitleWithDetails = Title & {
+    details?: IMDbTitle;
 };
