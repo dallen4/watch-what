@@ -17,6 +17,11 @@ const theme = createMuiTheme({
         },
         custom: {},
     },
+    props: {
+        MuiButton: {
+            disableElevation: true,
+        }
+    }
 });
 
 export default theme;
