@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import {
     Box,
+    Button,
+    ButtonGroup,
     Checkbox,
+    CircularProgress,
     FormControl,
     FormControlLabel,
     FormGroup,
@@ -10,6 +13,7 @@ import {
     LinearProgress,
     List,
     ListItem,
+    ListItemText,
     MenuItem,
     Select,
     Typography,
@@ -22,6 +26,7 @@ import { Genres } from '@config/Genres';
 import useSearch from 'hooks/use-search';
 import { useRouter } from 'next/router';
 import useStyles from 'theme/styles';
+import { ViewComfy, ViewList } from '@material-ui/icons';
 
 export default function Home() {
     const router = useRouter();
@@ -40,7 +45,7 @@ export default function Home() {
         genres,
         sort: {
             field: sortField,
-            order: 'asc',
+            order: 'desc',
         },
     });
 
@@ -89,55 +94,76 @@ export default function Home() {
                 alignItems={'flex-start'}
                 paddingBottom={2}
             >
-                <FormControl component="fieldset">
-                    <FormLabel component="legend">Platforms</FormLabel>
+                <FormControl component={'fieldset'} className={classes.filter}>
+                    <FormLabel component={'legend'}>Platforms</FormLabel>
                     <FormGroup className={classes.filterList}>
                         {Sources.map((source) => (
                             <FormControlLabel
+                                key={source.id}
                                 control={
                                     <Checkbox
                                         checked={sources.includes(source.id)}
                                         onChange={() => onSourceToggle(source.id)}
                                         name={source.name}
+                                        style={{ padding: '2px' }}
                                     />
                                 }
                                 label={source.name}
+                                style={{
+                                    paddingLeft: '6px',
+                                    paddingTop: '2px',
+                                    paddingBottom: '2px',
+                                }}
                             />
                         ))}
                     </FormGroup>
                     <FormHelperText>Choose streaming platforms</FormHelperText>
                 </FormControl>
-                <FormControl component="fieldset">
-                    <FormLabel component="legend">Genres</FormLabel>
+                <FormControl component={'fieldset'} className={classes.filter}>
+                    <FormLabel component={'legend'}>Genres</FormLabel>
                     <FormGroup className={classes.filterList}>
                         {Genres.map((genre) => (
                             <FormControlLabel
+                                key={genre.id}
                                 control={
                                     <Checkbox
                                         checked={genres.includes(genre.id)}
                                         onChange={() => onGenreToggle(genre.id)}
                                         name={genre.name}
+                                        style={{ padding: '2px' }}
                                     />
                                 }
                                 label={genre.name}
+                                style={{
+                                    paddingLeft: '6px',
+                                    paddingTop: '2px',
+                                    paddingBottom: '2px',
+                                }}
                             />
                         ))}
                     </FormGroup>
                     <FormHelperText>Choose genres</FormHelperText>
                 </FormControl>
-                <FormControl component="fieldset">
-                    <FormLabel component="legend">Types</FormLabel>
+                <FormControl component={'fieldset'} className={classes.filter}>
+                    <FormLabel component={'legend'}>Types</FormLabel>
                     <FormGroup className={classes.filterList}>
                         {TitleTypes.map((type) => (
                             <FormControlLabel
+                                key={type}
                                 control={
                                     <Checkbox
                                         checked={types.includes(type)}
                                         onChange={() => onTypeToggle(type)}
                                         name={type}
+                                        style={{ padding: '2px' }}
                                     />
                                 }
                                 label={type}
+                                style={{
+                                    paddingLeft: '6px',
+                                    paddingTop: '2px',
+                                    paddingBottom: '2px',
+                                }}
                             />
                         ))}
                     </FormGroup>
@@ -147,12 +173,32 @@ export default function Home() {
                     value={sortField}
                     onChange={(e) => setSortField(e.target.value as string)}
                 >
-                    {SortOptions.map((sort) => (
-                        <MenuItem value={sort}>{sort}</MenuItem>
+                    {SortOptions.map((sort, index) => (
+                        <MenuItem key={index} value={sort}>
+                            {sort}
+                        </MenuItem>
                     ))}
                 </Select>
             </Box>
-            <List style={{ width: '100%' }}>
+            <ButtonGroup variant={'outlined'} color={'secondary'}>
+                <Button variant={'contained'}>
+                    <ViewList />
+                </Button>
+                <Button>
+                    <ViewComfy />
+                </Button>
+            </ButtonGroup>
+            <List
+                style={{
+                    marginTop: '16px',
+                    minHeight: '250px',
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
                 {loading && (
                     <div>
                         <LinearProgress />
@@ -165,9 +211,52 @@ export default function Home() {
                     </Typography>
                 )}
                 {titles.map((title) => (
-                    <ListItem onClick={() => router.push(`/title/${title.imdb_id}`)}>
-                        <Typography>{title.title}</Typography>
-                        <Typography variant={'caption'}>{title.year}</Typography>
+                    <ListItem
+                        key={title.id}
+                        onClick={() => router.push(`/title/${title.imdb_id}`)}
+                        style={{ height: '250px' }}
+                    >
+                        <img height={'100%'} src={title.details?.poster} />
+                        <Box padding={2}>
+                            <ListItemText
+                                primary={
+                                    <>
+                                        {title.title}
+                                        <Typography
+                                            component={'span'}
+                                            variant={'caption'}
+                                        >
+                                            {title.year}
+                                        </Typography>
+                                    </>
+                                }
+                                secondary={title.details?.overview}
+                            />
+                            <Box position={'relative'} display={'inline-flex'}>
+                                <CircularProgress
+                                    variant={'determinate'}
+                                    value={(title.details?.vote_average || 0) * 10}
+                                />
+                                <Box
+                                    top={0}
+                                    left={0}
+                                    bottom={0}
+                                    right={0}
+                                    position={'absolute'}
+                                    display={'flex'}
+                                    alignItems={'center'}
+                                    justifyContent={'center'}
+                                >
+                                    <Typography
+                                        variant={'caption'}
+                                        component={'div'}
+                                        color={'textSecondary'}
+                                    >{`${
+                                        (title.details?.vote_average || 0) * 10
+                                    }%`}</Typography>
+                                </Box>
+                            </Box>
+                        </Box>
                     </ListItem>
                 ))}
             </List>

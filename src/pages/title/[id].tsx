@@ -11,14 +11,17 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     return {
         props: {
             titleId: id,
-            title: { ...data },
+            title: {
+                ...data,
+                poster:
+                    `https://image.tmdb.org/t/p/w300_and_h450_bestv2` + data.poster_path,
+                name: data.title || data.name || data.original_name || data.original_title,
+            },
         },
     };
 };
 
-export default function Title(props: TitleProps) {
-    const { title, titleId } = props;
-
+export default function Title({ title }: TitleProps) {
     return (
         <Box
             width={'100%'}
@@ -30,13 +33,13 @@ export default function Title(props: TitleProps) {
             justifyContent={'flex-start'}
             alignItems={'center'}
         >
-            <Typography>{title.Title}</Typography>
-            <img src={title.Poster} width={'34%'} />
+            <Typography>{title.name}</Typography>
+            <img src={title.poster} width={'34%'} />
         </Box>
     );
 }
 
 export type TitleProps = {
     titleId: string;
-    title: any;
+    title: IMDbTitle;
 };
