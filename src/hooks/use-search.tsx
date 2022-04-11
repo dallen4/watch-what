@@ -46,8 +46,6 @@ export default function useSearch(options: UseSearchInput) {
 
     const { data, error } = useSWR(['/api/search', input], fetcher);
 
-    console.log(data);
-
     const titles = data?.titles ?? [];
 
     return {
