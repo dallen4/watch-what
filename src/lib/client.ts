@@ -28,6 +28,7 @@ export const searchTitles = async (options: SearchInput) => {
             types: types.join(','),
             sort_by,
             regions: 'US',
+            limit: 50,
         },
     });
 
