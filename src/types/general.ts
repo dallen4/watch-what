@@ -1,9 +1,14 @@
-import { NextApiRequest } from 'next';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { Request, Response } from 'express';
 import { IMDbTitle } from './imdb';
+import { SessionContainerInterface } from 'supertokens-node/lib/build/recipe/session/types';
 
-export type ApiRequest<Data = any> = Omit<NextApiRequest, 'body'> & {
-    body: Data;
-};
+export type ApiRequest<Data = any> = Omit<NextApiRequest, 'body'> &
+    Request<any, Data> & {
+        session?: SessionContainerInterface;
+    };
+
+export type ApiResponse<Data = any> = Omit<NextApiResponse, 'body'> & Response<Data>;
 
 export enum SortBy {
     RelevanceDesc = 'relevance_desc',
@@ -52,7 +57,12 @@ export type Genre = {
     tmdb_id: number;
 };
 
-export type TitleType = 'movie' | 'tv_series' | 'tv_special' | 'tv_miniseries' | 'short_film';
+export type TitleType =
+    | 'movie'
+    | 'tv_series'
+    | 'tv_special'
+    | 'tv_miniseries'
+    | 'short_film';
 
 export const TitleTypes = [
     'Movie',
