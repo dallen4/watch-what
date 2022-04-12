@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Box, Button, CssBaseline, ThemeProvider, Typography } from '@material-ui/core';
+import { AppBar, Box, CssBaseline, ThemeProvider, Typography } from '@material-ui/core';
 import { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import { SnackbarProvider } from 'notistack';
@@ -8,6 +8,12 @@ import { initGA, logPageView } from '@lib/analytics';
 import Footer from 'atoms/Footer';
 import theme from 'theme';
 import BrandLogo from 'atoms/BrandLogo';
+import SuperTokensReact from 'supertokens-auth-react';
+import { frontendConfig } from 'config/auth/frontend';
+
+if (typeof window !== 'undefined') {
+    SuperTokensReact.init(frontendConfig());
+}
 
 export default function MyApp(props: AppProps) {
     const { Component, pageProps } = props;
@@ -70,10 +76,10 @@ export default function MyApp(props: AppProps) {
                         }}
                     >
                         <div>
-                        <BrandLogo />
-                        <Typography color={'secondary'}>
-                            For what to watch when you're tired of switching apps.
-                        </Typography>
+                            <BrandLogo />
+                            <Typography color={'secondary'}>
+                                For what to watch when you're tired of switching apps.
+                            </Typography>
                         </div>
                     </AppBar>
                     <Component {...pageProps} />
