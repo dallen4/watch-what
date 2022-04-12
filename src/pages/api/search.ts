@@ -6,15 +6,34 @@ import { backendConfig } from 'config/auth/backend';
 import { ApiResponse, SearchRequest, TitleWithDetails } from 'types/general';
 import { searchTitles } from '@lib/watchmode';
 import { getTitleDetails } from '@lib/imdb';
+import { hash } from '@lib/util';
+import redis from '@lib/redis';
 
+const DAY_IN_SECONDS = 86400;
 const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000;
 
 export default async function search(req: SearchRequest, res: ApiResponse) {
+    // block non-POST requests
     if (req.method !== 'POST') {
         res.status(405).end();
         return;
     }
 
+    // check cache
+
+    const stringifiedInput = JSON.stringify(req.body);
+    const cacheKey = hash(stringifiedInput);
+
+    const cachedValue = await redis.hgetall(cacheKey);
+
+    if (cachedValue && cachedValue.titles) {
+        console.log('CACHE HIT: ' + cacheKey);
+        const parsedTitles = JSON.parse(cachedValue.titles);
+        res.status(200).json({ titles: parsedTitles });
+        return;
+    }
+
+    // initialize auth tool
     supertokens.init(backendConfig());
 
     try {
@@ -61,6 +80,11 @@ export default async function search(req: SearchRequest, res: ApiResponse) {
     });
 
     const titlesWithMeta = await Promise.all(titlesWithMetaReqs);
+
+    await redis.hmset(cacheKey, {
+        titles: JSON.stringify(titlesWithMeta),
+    });
+    await redis.expire(cacheKey, DAY_IN_SECONDS);
 
     res.status(200).json({ titles: titlesWithMeta });
     return;
