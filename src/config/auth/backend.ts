@@ -1,5 +1,6 @@
 import PasswordlessNode from 'supertokens-node/recipe/passwordless';
 import SessionNode from 'supertokens-node/recipe/session';
+import UserMetadata from 'supertokens-node/recipe/usermetadata';
 import { appInfo } from './appInfo';
 import { TypeInput } from 'supertokens-node/types';
 import { sendLoginEmail } from '@lib/email';
@@ -9,7 +10,7 @@ export const backendConfig = (): TypeInput => {
         framework: 'express',
         supertokens: {
             connectionURI: process.env.SUPERTOKENS_CONNECTION_URI!,
-            apiKey: process.env.SUPERTOKENS_API_KEY,
+            apiKey: process.env.SUPERTOKENS_API_KEY!,
         },
         appInfo,
         recipeList: [
@@ -22,6 +23,7 @@ export const backendConfig = (): TypeInput => {
                 },
             }),
             SessionNode.init(),
+            UserMetadata.init(),
         ],
         isInServerlessEnv: true,
     };
