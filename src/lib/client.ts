@@ -9,3 +9,5 @@ export const getSession = async () => {
     console.log(session);
     return session.data;
 };
+
+export { client };
