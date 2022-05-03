@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Typography } from '@material-ui/core';
-import { getCheckoutStatus, getSession } from '@lib/client';
+import { getCheckoutStatus } from '@lib/client';
 
 const PremiumResult = () => {
     const router = useRouter();
