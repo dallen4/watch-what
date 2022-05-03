@@ -1,4 +1,4 @@
-import { getTitleDetails } from '@lib/imdb';
+import { getTitleDetails } from 'api/data/imdb';
 import { Box, Typography } from '@material-ui/core';
 import { GetServerSideProps } from 'next';
 import { IMDbTitle } from 'types/imdb';

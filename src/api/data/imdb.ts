@@ -1,11 +1,10 @@
 import axios from 'axios';
-import IMDb from 'imdb-light';
 import { IMDbTitle } from 'types/imdb';
 
 const client = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
     params: {
-        api_key: '0e8df11290dfd54a54e5c5fee1845a1d',
+        api_key: process.env.TMDB_API_KEY!,
     },
 });
 
