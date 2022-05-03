@@ -1,24 +1,9 @@
-import { superTokensNextWrapper } from 'supertokens-node/nextjs';
-import { verifySession } from 'supertokens-node/recipe/session/framework/express';
-import supertokens from 'supertokens-node';
 import UserMetadata from 'supertokens-node/recipe/usermetadata';
-import { NextApiResponse } from 'next';
-import { Response } from 'express';
-import { backendConfig } from 'config/auth/backend';
-import { ApiRequest } from 'types/general';
+import { ApiRequest, ApiResponse } from 'types/general';
+import { auth } from 'api/middleware/auth';
 
-supertokens.init(backendConfig());
-
-export default async function me(req: ApiRequest, res: NextApiResponse & Response) {
+async function me(req: ApiRequest, res: ApiResponse) {
     if (req.method !== 'GET') return res.status(405).end();
-
-    await superTokensNextWrapper(
-        async (next) => {
-            return await verifySession()(req, res, next);
-        },
-        req,
-        res,
-    );
 
     const userId = req.session!.getUserId();
 
@@ -32,3 +17,5 @@ export default async function me(req: ApiRequest, res: NextApiResponse & Respons
 
     return;
 }
+
+export default auth(me, true);
