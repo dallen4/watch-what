@@ -1,0 +1,22 @@
+import supertokens from 'supertokens-node';
+import { backendConfig } from 'config/auth/backend';
+import { ApiRequest, ApiResponse } from 'types/general';
+import { superTokensNextWrapper } from 'supertokens-node/nextjs';
+import { verifySession } from 'supertokens-node/recipe/session/framework/express';
+
+supertokens.init(backendConfig());
+
+export const auth = (
+    handler: (req: ApiRequest<any>, res: ApiResponse<any>) => Promise<void>,
+    required = false,
+) => async (req: ApiRequest, res: ApiResponse) => {
+    await superTokensNextWrapper(
+        async (next) => {
+            return await verifySession({ sessionRequired: required })(req, res, next);
+        },
+        req,
+        res,
+    );
+
+    return handler(req, res);
+};
