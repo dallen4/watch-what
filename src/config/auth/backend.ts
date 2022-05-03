@@ -3,7 +3,7 @@ import SessionNode from 'supertokens-node/recipe/session';
 import UserMetadata from 'supertokens-node/recipe/usermetadata';
 import { appInfo } from './appInfo';
 import { TypeInput } from 'supertokens-node/types';
-import { sendLoginEmail } from '@lib/email';
+import { sendLoginEmail } from 'api/email';
 
 export const backendConfig = (): TypeInput => {
     return {

@@ -1,5 +1,5 @@
 import { client } from '@lib/client';
-import getStripe from '@lib/payments';
+import getStripe from '@lib/stripe';
 import { AxiosResponse } from 'axios';
 import useNotification from './use-notification';
 
@@ -13,12 +13,14 @@ export default function useCheckout() {
 
         const sessionId = resp.data.id;
 
-        const stripe = await getStripe();
+        try {
+            const stripe = await getStripe();
 
-        const { error } = await stripe!.redirectToCheckout({ sessionId });
+            const { error } = await stripe!.redirectToCheckout({ sessionId });
 
-        if (error) {
-            console.error(error);
+            if (error) throw error;
+        } catch (err) {
+            console.error(err);
             pushErrorMessage('Failed to redirect to checkout page');
         }
     };

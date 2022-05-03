@@ -4,10 +4,10 @@ import Session from 'supertokens-node/recipe/session';
 import supertokens from 'supertokens-node';
 import { backendConfig } from 'config/auth/backend';
 import { ApiResponse, SearchRequest, TitleWithDetails } from 'types/general';
-import { searchTitles } from '@lib/watchmode';
-import { getTitleDetails } from '@lib/imdb';
+import { searchTitles } from 'api/data/watchmode';
+import { getTitleDetails } from 'api/data/imdb';
 import { hash } from '@lib/util';
-import redis from '@lib/redis';
+import redis from 'api/redis';
 
 const DAY_IN_SECONDS = 86400;
 const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000;
