@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { IMDbTitle } from 'types/imdb';
+import redis from 'api/redis';
 
 const client = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
@@ -8,7 +9,18 @@ const client = axios.create({
     },
 });
 
+const WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+
 export const getTitleDetails = async (titleId: string) => {
+    const cacheKey = `title:${titleId}`;
+
+    const cachedValue = await redis.hgetall(cacheKey);
+
+    if (!cachedValue || Object.keys(cachedValue).length > 0) {
+        console.log('CACHE HIT: ' + cacheKey);
+        return (cachedValue as unknown) as IMDbTitle;
+    }
+
     const request = await client.get(`/find/${titleId}`, {
         params: {
             external_source: 'imdb_id',
@@ -29,5 +41,24 @@ export const getTitleDetails = async (titleId: string) => {
         ...tv_season_results,
     ];
 
-    return details as IMDbTitle;
+    const title: IMDbTitle = {
+        ...details,
+        genre_ids:
+            typeof details.genre_ids === 'string'
+                ? details.genre_ids.split(',').map(Number)
+                : details.genre_ids,
+        poster: details.poster_path
+            ? `https://image.tmdb.org/t/p/w300_and_h450_bestv2` + details.poster_path
+            : undefined,
+        name:
+            details.title ||
+            details.name ||
+            details.original_name ||
+            details.original_title,
+    };
+
+    await redis.hmset(cacheKey, title);
+    await redis.expire(cacheKey, WEEK_IN_SECONDS);
+
+    return title;
 };
