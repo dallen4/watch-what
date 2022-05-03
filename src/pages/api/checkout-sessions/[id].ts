@@ -19,7 +19,9 @@ export default async function handler(req: ApiRequest, res: NextApiResponse) {
             expand: ['payment_intent'],
         });
 
-        res.status(200).json(session);
+        const { status } = session;
+
+        res.status(200).json({ status });
     } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Internal server error';
         res.status(500).json({ message: errorMessage });
