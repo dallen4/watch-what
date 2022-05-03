@@ -1,5 +1,4 @@
 import axios from 'axios';
-import IMDb from 'imdb-light';
 import { IMDbTitle } from 'types/imdb';
 
 const client = axios.create({
