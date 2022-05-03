@@ -1,17 +1,12 @@
-import { client } from '@lib/client';
+import { post } from '@lib/client';
 import getStripe from '@lib/stripe';
-import { AxiosResponse } from 'axios';
 import useNotification from './use-notification';
 
 export default function useCheckout() {
     const { pushErrorMessage } = useNotification();
 
     const startCheckout = async () => {
-        const resp: AxiosResponse<{ id: string }> = await client.post(
-            '/api/checkout-sessions',
-        );
-
-        const sessionId = resp.data.id;
+        const { id: sessionId } = await post<{ id: string }>('/api/checkout-sessions');
 
         try {
             const stripe = await getStripe();
