@@ -17,9 +17,6 @@
         "paths": {
             "@atoms/*": ["atoms/*"],
             "@lib/*": ["lib/*"],
-            "@assets/*": ["assets/*"],
-            "@components/*": ["components/*"],
-            "@utils/*": ["utils/*"],
             "@config/*": ["config/*"],
             "@hookform/*": ["node_modules/@hookform/*"]
         },
