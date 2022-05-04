@@ -1,9 +1,10 @@
+import supertokens from 'supertokens-node';
+import { TypeInput } from 'supertokens-node/types';
 import PasswordlessNode from 'supertokens-node/recipe/passwordless';
 import SessionNode from 'supertokens-node/recipe/session';
 import UserMetadata from 'supertokens-node/recipe/usermetadata';
-import { appInfo } from './appInfo';
-import { TypeInput } from 'supertokens-node/types';
-import { sendLoginEmail } from 'api/email';
+import { appInfo } from '../config/auth/appInfo';
+import { sendLoginEmail } from './email';
 
 export const backendConfig = (): TypeInput => {
     return {
@@ -27,4 +28,8 @@ export const backendConfig = (): TypeInput => {
         ],
         isInServerlessEnv: true,
     };
+};
+
+export const init = (): void => {
+    supertokens.init(backendConfig());
 };
