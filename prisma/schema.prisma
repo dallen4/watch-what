@@ -11,10 +11,10 @@ datasource db {
 }
 
 model User {
-    id      String      @id @default(uuid())
-    name    String?     @db.VarChar(50)
-    premium Boolean     @default(false)
-    lists   WatchList[]
+    id    String      @id @default(uuid())
+    name  String?     @db.VarChar(50)
+    plan  UserPlan    @default(FREE)
+    lists WatchList[]
 }
 
 model WatchList {
@@ -24,4 +24,9 @@ model WatchList {
     titles      Int[]
     userId      String
     user        User    @relation(fields: [userId], references: [id])
+}
+
+enum UserPlan {
+    FREE
+    PREMIUM
 }
