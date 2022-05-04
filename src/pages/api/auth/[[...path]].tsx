@@ -2,10 +2,9 @@ import { superTokensNextWrapper } from 'supertokens-node/nextjs';
 import { middleware } from 'supertokens-node/framework/express';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Request, Response } from 'express';
-import supertokens from 'supertokens-node';
-import { backendConfig } from 'config/auth/backend';
+import { init } from 'api/auth';
 
-supertokens.init(backendConfig());
+init();
 
 export default async function superTokens(
     req: NextApiRequest & Request,

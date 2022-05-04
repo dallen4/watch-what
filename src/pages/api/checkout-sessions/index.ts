@@ -4,15 +4,14 @@ import Stripe from 'stripe';
 import { superTokensNextWrapper } from 'supertokens-node/nextjs';
 import { verifySession } from 'supertokens-node/recipe/session/framework/express';
 import { ApiRequest } from 'types/general';
-import supertokens from 'supertokens-node';
-import { backendConfig } from '@config/auth/backend';
+import { init } from 'api/auth';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     // https://github.com/stripe/stripe-node#configuration
     apiVersion: '2020-08-27',
 });
 
-supertokens.init(backendConfig());
+init();
 
 export default async function handler(req: ApiRequest, res: NextApiResponse & Response) {
     if (req.method !== 'POST') {
