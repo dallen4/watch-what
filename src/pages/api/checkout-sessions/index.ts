@@ -1,10 +1,8 @@
-import { NextApiResponse } from 'next';
-import { Response } from 'express';
 import Stripe from 'stripe';
-import { superTokensNextWrapper } from 'supertokens-node/nextjs';
-import { verifySession } from 'supertokens-node/recipe/session/framework/express';
-import { ApiRequest } from 'types/general';
+import { getUserById } from 'supertokens-node/recipe/passwordless';
+import { ApiRequest, ApiResponse } from 'types/general';
 import { init } from 'api/auth';
+import { auth } from 'api/middleware/auth';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     // https://github.com/stripe/stripe-node#configuration
@@ -13,22 +11,15 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 init();
 
-export default async function handler(req: ApiRequest, res: NextApiResponse & Response) {
+async function startCheckoutSession(req: ApiRequest, res: ApiResponse) {
     if (req.method !== 'POST') {
         res.setHeader('Allow', 'POST');
         res.status(405).end('Method Not Allowed');
         return;
     }
 
-    await superTokensNextWrapper(
-        async (next) => {
-            return await verifySession()(req, res, next);
-        },
-        req,
-        res,
-    );
-
     const userId = req.session!.getUserId();
+    const user = await getUserById({ userId });
 
     try {
         // create Checkout Session
@@ -45,6 +36,7 @@ export default async function handler(req: ApiRequest, res: NextApiResponse & Re
             metadata: {
                 userId,
             },
+            customer_email: user?.email,
             success_url: `${req.headers.origin}/premium/result?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${req.headers.origin}/premium/result`,
         };
@@ -58,3 +50,5 @@ export default async function handler(req: ApiRequest, res: NextApiResponse & Re
         res.status(500).json({ message: errorMessage });
     }
 }
+
+export default auth(startCheckoutSession, true);
