@@ -34,6 +34,8 @@ export const getTitleDetails = async (titleId: string) => {
         tv_season_results,
     } = request.data;
 
+    const type = movie_results.length > 0 ? 'movie' : 'tv';
+
     const [details] = [
         ...movie_results,
         ...tv_results,
@@ -43,6 +45,7 @@ export const getTitleDetails = async (titleId: string) => {
 
     const title: IMDbTitle = {
         ...details,
+        type,
         genre_ids:
             typeof details.genre_ids === 'string'
                 ? details.genre_ids.split(',').map(Number)
