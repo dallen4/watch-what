@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import useSWR from 'swr';
+import { post } from '@lib/client';
 import { SearchInput, SearchResult, SortBy } from 'types/general';
 
 export type UseSearchInput = Omit<SearchInput, 'sort_by'> & {
@@ -12,15 +13,7 @@ export type UseSearchInput = Omit<SearchInput, 'sort_by'> & {
 const fetcher = async (path: string, args: SearchInput) => {
     if (args.sources.length === 0 || args.genres.length === 0) return { titles: [] };
 
-    const res = await fetch(path, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(args),
-    });
-
-    const data: SearchResult = await res.json();
+    const data = await post<SearchResult>(path, args);
 
     return data;
 };
@@ -37,9 +30,9 @@ export default function useSearch(options: UseSearchInput) {
         );
 
         return {
-            sources,
-            types: titleTypes,
-            genres,
+            sources: sources.sort(),
+            types: titleTypes.sort(),
+            genres: genres.sort(),
             sort_by: sortKey as SortBy,
         };
     }, [sources, genres, sort]);

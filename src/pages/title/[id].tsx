@@ -1,4 +1,4 @@
-import { getTitleDetails } from '@lib/imdb';
+import { getTitleDetails } from 'api/data/imdb';
 import { Box, Typography } from '@material-ui/core';
 import { GetServerSideProps } from 'next';
 import { IMDbTitle } from 'types/imdb';
@@ -6,17 +6,12 @@ import { IMDbTitle } from 'types/imdb';
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     const { id } = query;
 
-    const data: IMDbTitle = await getTitleDetails(id as string);
+    const title = await getTitleDetails(id as string);
 
     return {
         props: {
             titleId: id,
-            title: {
-                ...data,
-                poster:
-                    `https://image.tmdb.org/t/p/w300_and_h450_bestv2` + data.poster_path,
-                name: data.title || data.name || data.original_name || data.original_title,
-            },
+            title,
         },
     };
 };

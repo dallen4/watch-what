@@ -1,48 +1,38 @@
-import { superTokensNextWrapper } from 'supertokens-node/nextjs';
-import { verifySession } from 'supertokens-node/recipe/session/framework/express';
-import supertokens from 'supertokens-node';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { Request, Response } from 'express';
-import { backendConfig } from 'config/auth/backend';
+import UserMetadata from 'supertokens-node/recipe/usermetadata';
+import { ApiRequest, ApiResponse } from 'types/general';
+import { auth } from 'api/middleware/auth';
+import prisma from 'api/prisma';
+import { WatchList } from '@prisma/client';
 
-supertokens.init(backendConfig());
+type Profile = {
+    id: string;
+    metadata: any;
+    lists?: WatchList[];
+};
 
-export type ApiRequest = NextApiRequest &
-    Request & {
-        session: {
-            getHandle: () => string;
-            getUserId: () => string;
-            getSessionData: () => any;
-            updateSessionData: (data: any) => Promise<void>;
-            getAccessTokenPayload: () => any;
-            updateAccessTokenPayload: (data: any) => void;
-            revokeSession: () => void;
-            getTimeCreated: () => number;
-            getExpiry: () => number;
-            getAccessToken: () => string;
-        };
+async function me(req: ApiRequest, res: ApiResponse) {
+    if (req.method !== 'GET') return res.status(405).end();
+
+    const userId = req.session!.getUserId();
+
+    const { metadata } = await UserMetadata.getUserMetadata(userId);
+
+    const profile: Profile = {
+        id: userId,
+        metadata,
     };
 
-export default async function me(
-    req: NextApiRequest & Request,
-    res: NextApiResponse & Response,
-) {
-    if (req.method !== 'GET')
-        return res.status(405).end();
+    if (metadata.premium) {
+        profile.lists = await prisma.watchList.findMany({
+            where: {
+                userId,
+            },
+        });
+    }
 
-    await superTokensNextWrapper(
-        async (next) => {
-            return await verifySession()(req, res, next);
-        },
-        req,
-        res,
-    );
+    res.status(200).json(profile);
 
-    const reqWithSession = req as ApiRequest;
-
-    return res.json({
-        userId: reqWithSession.session.getUserId(),
-        handle: reqWithSession.session.getHandle(),
-        data: reqWithSession.session.getAccessTokenPayload(),
-    });
+    return;
 }
+
+export default auth(me, true);

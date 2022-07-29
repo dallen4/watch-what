@@ -2,7 +2,7 @@
 declare module '*posts' {
     const value: any;
     export default value;
-};
+}
 
 declare module '*.md';
 
@@ -10,4 +10,8 @@ interface Window {
     GA_ANALYTICS: boolean;
 }
 
-declare module 'imdb-light';
+declare module NodeJS {
+    interface Global {
+        prisma: import('@prisma/client').PrismaClient;
+    }
+}

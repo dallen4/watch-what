@@ -1,12 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Request, Response } from 'express';
 import { IMDbTitle } from './imdb';
-import { SessionContainerInterface } from 'supertokens-node/lib/build/recipe/session/types';
+import { SessionRequest } from 'supertokens-node/framework/express';
 
 export type ApiRequest<Data = any> = Omit<NextApiRequest, 'body'> &
-    Request<any, Data> & {
-        session?: SessionContainerInterface;
-    };
+    Request<any, Data> &
+    SessionRequest;
 
 export type ApiResponse<Data = any> = Omit<NextApiResponse, 'body'> & Response<Data>;
 
