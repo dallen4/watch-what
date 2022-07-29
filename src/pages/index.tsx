@@ -4,7 +4,6 @@ import {
     Button,
     ButtonGroup,
     Checkbox,
-    CircularProgress,
     FormControl,
     FormControlLabel,
     FormGroup,
@@ -12,8 +11,6 @@ import {
     FormLabel,
     LinearProgress,
     List,
-    ListItem,
-    ListItemText,
     MenuItem,
     Select,
     Typography,
@@ -27,6 +24,9 @@ import useSearch from 'hooks/use-search';
 import { useRouter } from 'next/router';
 import useStyles from 'theme/styles';
 import { ViewComfy, ViewList } from '@material-ui/icons';
+import { TitleCard } from '@atoms/TitleCard';
+
+export type ViewMode = 'list' | 'grid';
 
 export default function Home() {
     const router = useRouter();
@@ -37,6 +37,7 @@ export default function Home() {
     const [types, setTypes] = useState<string[]>([]);
     const [genres, setGenres] = useState<number[]>([]);
     const [sortField, setSortField] = useState<string>(SortOptions[0]);
+    const [viewMode, setViewMode] = useState<ViewMode>('list');
 
     const { titles, loading, error } = useSearch({
         query: '',
@@ -73,6 +74,20 @@ export default function Home() {
         if (typeIndex === -1) setTypes([...types, type]);
         else setTypes(types.filter((t) => t !== type));
     };
+
+    const modeStyles: React.CSSProperties =
+        viewMode === 'list'
+            ? {
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+              }
+            : {
+                  flexDirection: 'row',
+                  justifyContent: 'flex-start',
+                  alignItems: 'flex-start',
+                  flexWrap: 'wrap',
+              };
 
     return (
         <Box
@@ -185,10 +200,18 @@ export default function Home() {
                 </Select>
             </Box>
             <ButtonGroup variant={'outlined'} color={'secondary'}>
-                <Button variant={'contained'}>
+                <Button
+                    variant={viewMode === 'list' ? 'contained' : undefined}
+                    onClick={() => setViewMode('list')}
+                    disableElevation
+                >
                     <ViewList />
                 </Button>
-                <Button>
+                <Button
+                    variant={viewMode === 'grid' ? 'contained' : undefined}
+                    onClick={() => setViewMode('grid')}
+                    disableElevation
+                >
                     <ViewComfy />
                 </Button>
             </ButtonGroup>
@@ -198,9 +221,7 @@ export default function Home() {
                     minHeight: '250px',
                     width: '100%',
                     display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    ...modeStyles,
                 }}
             >
                 {loading && (
@@ -224,53 +245,7 @@ export default function Home() {
                     </Typography>
                 )}
                 {titles.map((title) => (
-                    <ListItem
-                        key={title.id}
-                        onClick={() => router.push(`/title/${title.imdb_id}`)}
-                        style={{ height: '250px' }}
-                    >
-                        <img height={'100%'} src={title.details?.poster} />
-                        <Box padding={2}>
-                            <ListItemText
-                                primary={
-                                    <>
-                                        {title.title}
-                                        <Typography
-                                            component={'span'}
-                                            variant={'caption'}
-                                        >
-                                            {title.year}
-                                        </Typography>
-                                    </>
-                                }
-                                secondary={title.details?.overview}
-                            />
-                            <Box position={'relative'} display={'inline-flex'}>
-                                <CircularProgress
-                                    variant={'determinate'}
-                                    value={(title.details?.vote_average || 0) * 10}
-                                />
-                                <Box
-                                    top={0}
-                                    left={0}
-                                    bottom={0}
-                                    right={0}
-                                    position={'absolute'}
-                                    display={'flex'}
-                                    alignItems={'center'}
-                                    justifyContent={'center'}
-                                >
-                                    <Typography
-                                        variant={'caption'}
-                                        component={'div'}
-                                        color={'textSecondary'}
-                                    >{`${
-                                        (title.details?.vote_average || 0) * 10
-                                    }%`}</Typography>
-                                </Box>
-                            </Box>
-                        </Box>
-                    </ListItem>
+                    <TitleCard title={title} mode={viewMode} />
                 ))}
             </List>
         </Box>
