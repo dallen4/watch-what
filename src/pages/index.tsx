@@ -49,6 +49,10 @@ export default function Home() {
         },
     });
 
+    console.log(titles);
+    console.log(loading);
+    console.error(error);
+
     const onSourceToggle = (source: number) => {
         const sourceIndex = sources.indexOf(source);
 
@@ -200,8 +204,17 @@ export default function Home() {
                 }}
             >
                 {loading && (
-                    <div>
-                        <LinearProgress />
+                    <div
+                        style={{
+                            width: '100%',
+                            height: '30vh',
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <LinearProgress style={{ width: '75%' }} />
                     </div>
                 )}
                 {error && <div>Error!</div>}

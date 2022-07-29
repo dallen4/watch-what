@@ -30,23 +30,23 @@ async function search(req: SearchRequest, res: ApiResponse) {
         return;
     }
 
-    if (!req.session) {
-        const cookie = getCookie('search-count', { req, res }) as string;
+    // if (!req.session) {
+    //     const cookie = getCookie('search-count', { req, res }) as string;
 
-        const options: OptionsType = {
-            req,
-            res,
-            maxAge: WEEK_IN_MS,
-        };
+    //     const options: OptionsType = {
+    //         req,
+    //         res,
+    //         maxAge: WEEK_IN_MS,
+    //     };
 
-        if (!cookie) setCookies('search-count', 1, options);
-        else if (cookie && parseInt(cookie) < 10)
-            setCookies('search-count', parseInt(cookie) + 1, options);
-        else {
-            res.status(429).end();
-            return;
-        }
-    }
+    //     if (!cookie) setCookies('search-count', 1, options);
+    //     else if (cookie && parseInt(cookie) < 10)
+    //         setCookies('search-count', parseInt(cookie) + 1, options);
+    //     else {
+    //         res.status(429).end();
+    //         return;
+    //     }
+    // }
 
     const data = await searchTitles(req.body);
 

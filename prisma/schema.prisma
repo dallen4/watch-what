@@ -1,5 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// ref: https://pris.ly/d/prisma-schema
 
 generator client {
     provider = "prisma-client-js"
@@ -21,7 +20,7 @@ model WatchList {
     id          String  @id @default(uuid())
     name        String  @db.VarChar(50)
     description String? @db.VarChar(50)
-    titles      Int[]
+    titles      String[]
     userId      String
     user        User    @relation(fields: [userId], references: [id])
 }

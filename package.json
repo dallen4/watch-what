@@ -10,7 +10,10 @@
         "build": "next build",
         "start:prod": "next start",
         "vercel-build": "prisma generate && prisma migrate deploy && next build",
-        "prisma:generate": "prisma generate"
+        "prisma:generate": "prisma generate",
+        "prisma:sync": "prisma db push",
+        "prisma:seed": "prisma db seed",
+        "prisma:studio": "prisma studio"
     },
     "dependencies": {
         "@hookform/resolvers": "^1.0.0",
@@ -69,6 +72,6 @@
         "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
     },
     "engines": {
-        "node": "14.x"
+        "node": "16.x"
     }
 }

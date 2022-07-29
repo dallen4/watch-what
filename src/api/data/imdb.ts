@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IMDbTitle } from 'types/imdb';
+import { IMDbTitle, TitleType, TitleVideoDetails, VideosResponse } from 'types/imdb';
 import redis from 'api/redis';
 
 const client = axios.create({
@@ -43,6 +43,8 @@ export const getTitleDetails = async (titleId: string) => {
         ...tv_season_results,
     ];
 
+    const videos = await getTitleVideos(details.id, type);
+
     const title: IMDbTitle = {
         ...details,
         type,
@@ -58,10 +60,34 @@ export const getTitleDetails = async (titleId: string) => {
             details.name ||
             details.original_name ||
             details.original_title,
+        videos,
     };
 
     await redis.hmset(cacheKey, title);
     await redis.expire(cacheKey, WEEK_IN_SECONDS);
 
     return title;
+};
+
+export const getTitleVideos = async (id: string, type: TitleType) => {
+    const path = `/${type}/${id}/videos`;
+
+    const request = await client.get<VideosResponse>(path);
+
+    const { results } = request.data;
+
+    const videos: TitleVideoDetails[] = results.map((video) => {
+        const embedUrl =
+            video.site === 'YouTube'
+                ? `https://www.youtube.com/embed/${video.key}`
+                : null;
+
+        return {
+            title: video.name,
+            url: embedUrl,
+            type: video.type,
+        };
+    }).filter((video) => video.url);
+
+    return videos;
 };
