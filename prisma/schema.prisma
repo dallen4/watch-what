@@ -1,0 +1,31 @@
+// ref: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id    String      @id @default(uuid())
+    name  String?     @db.VarChar(50)
+    plan  UserPlan    @default(FREE)
+    lists WatchList[]
+}
+
+model WatchList {
+    id          String  @id @default(uuid())
+    name        String  @db.VarChar(50)
+    description String? @db.VarChar(50)
+    titles      String[]
+    userId      String
+    user        User    @relation(fields: [userId], references: [id])
+}
+
+enum UserPlan {
+    FREE
+    PREMIUM
+}

@@ -4,6 +4,7 @@ import { buffer } from 'micro';
 import Cors from 'micro-cors';
 import UserMetadata from 'supertokens-node/recipe/usermetadata';
 import { ApiRequest } from 'types/general';
+import prisma from 'api/prisma';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     // https://github.com/stripe/stripe-node#configuration
@@ -69,6 +70,30 @@ const webhookHandler = async (req: ApiRequest, res: NextApiResponse) => {
         premium: true,
         transaction: transaction.id,
     });
+
+    let user = await prisma.user.findUnique({
+        where: {
+            id: userId,
+        },
+        rejectOnNotFound: false,
+    });
+
+    if (!user)
+        user = await prisma.user.create({
+            data: {
+                id: userId,
+                plan: 'PREMIUM',
+            },
+        });
+    else if (user.plan !== 'PREMIUM')
+        user = await prisma.user.update({
+            where: {
+                id: userId,
+            },
+            data: {
+                plan: 'PREMIUM',
+            },
+        });
 
     console.log(`Updated metadata for ${userId}: premium activated`);
 
