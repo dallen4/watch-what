@@ -5,10 +5,25 @@ import {
     Typography,
     CircularProgress,
     Box,
+    Grid,
+    BoxProps,
+    Theme,
+    makeStyles,
 } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import { ViewMode } from 'pages';
 import { TitleWithDetails } from 'types/general';
+
+const useStyles = makeStyles((theme: Theme) => ({
+    root: {
+        borderRadius: theme.shape.borderRadius,
+        '&:hover': {
+            cursor: 'pointer',
+            backgroundColor: theme.palette.primary.main,
+            color: 'white',
+        },
+    },
+}));
 
 export const TitleCard = ({
     title,
@@ -18,68 +33,74 @@ export const TitleCard = ({
     mode: ViewMode;
 }) => {
     const router = useRouter();
+    const classes = useStyles();
 
-    const customStyles: React.CSSProperties =
-        mode === 'grid'
-            ? {
-                  flex: 1,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'flex-start',
-                  alignItems: 'center',
-              }
-            : {};
+    const gridMode = mode === 'grid';
+
+    const customStyles: BoxProps = gridMode
+        ? {
+              flexDirection: 'column',
+          }
+        : {
+              flexDirection: 'row',
+              height: '250px',
+          };
 
     return (
-        <ListItem
+        <Grid
+            item
             key={title.id}
             onClick={() => router.push(`/title/${title.imdb_id}`)}
-            style={{
-                height: '250px',
-                ...customStyles,
-            }}
+            xs={gridMode ? 4 : 12}
+            className={classes.root}
         >
-            <img height={'100%'} src={title.details?.poster} />
-            {/* <Typography variant={'subtitle2'}>{title.title}</Typography> */}
-            {mode === 'list' && (
-                <Box padding={2}>
-                    <ListItemText
-                        primary={
-                            <>
-                                <Typography variant={'h5'}>{title.title}</Typography>
-                                <Typography component={'span'} variant={'caption'}>
-                                    {title.year}
-                                </Typography>
-                            </>
-                        }
-                        secondary={title.details?.overview}
-                    />
-                    <Box position={'relative'} display={'inline-flex'}>
-                        <CircularProgress
-                            variant={'determinate'}
-                            value={(title.details?.vote_average || 0) * 10}
+            <Box display={'flex'} {...customStyles}>
+                <img
+                    {...{ [gridMode ? 'width' : 'height']: '100%' }}
+                    src={title.details?.poster}
+                />
+                {!gridMode ? (
+                    <Box padding={2}>
+                        <ListItemText
+                            primary={
+                                <>
+                                    <Typography variant={'h5'}>{title.title}</Typography>
+                                    <Typography component={'span'} variant={'caption'}>
+                                        {title.year}
+                                    </Typography>
+                                </>
+                            }
+                            secondary={title.details?.overview}
                         />
-                        <Box
-                            top={0}
-                            left={0}
-                            bottom={0}
-                            right={0}
-                            position={'absolute'}
-                            display={'flex'}
-                            alignItems={'center'}
-                            justifyContent={'center'}
-                        >
-                            <Typography
-                                variant={'caption'}
-                                component={'div'}
-                                color={'textSecondary'}
-                            >{`${((title.details?.vote_average || 0) * 10).toFixed(
-                                0,
-                            )}%`}</Typography>
+                        <Box position={'relative'} display={'inline-flex'}>
+                            <CircularProgress
+                                variant={'determinate'}
+                                value={(title.details?.vote_average || 0) * 10}
+                            />
+                            <Box
+                                top={0}
+                                left={0}
+                                bottom={0}
+                                right={0}
+                                position={'absolute'}
+                                display={'flex'}
+                                alignItems={'center'}
+                                justifyContent={'center'}
+                            >
+                                <Typography
+                                    variant={'caption'}
+                                    component={'div'}
+                                    color={'textSecondary'}
+                                >{`${((title.details?.vote_average || 0) * 10).toFixed(
+                                    0,
+                                )}%`}</Typography>
+                            </Box>
                         </Box>
                     </Box>
-                </Box>
-            )}
-        </ListItem>
+                ) : (
+                    <Typography variant={'subtitle2'}>{title.title}</Typography>
+                )}
+            </Box>
+        </Grid>
     );
 };
