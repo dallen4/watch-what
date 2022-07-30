@@ -19,8 +19,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         borderRadius: theme.shape.borderRadius,
         '&:hover': {
             cursor: 'pointer',
-            backgroundColor: theme.palette.primary.main,
+            backgroundColor: `${theme.palette.primary.light}A5`,
             color: 'white',
+            '& svg': {
+                color: theme.palette.secondary.light,
+            },
         },
     },
 }));
