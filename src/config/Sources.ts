@@ -1,6 +1,5 @@
-
-export const Sources = [
-    {
+export const Sources = {
+    203: {
         id: 203,
         name: 'Netflix',
         type: 'sub',
@@ -85,7 +84,7 @@ export const Sources = [
             'za',
         ],
     },
-    {
+    157: {
         id: 157,
         name: 'Hulu',
         type: 'sub',
@@ -97,7 +96,7 @@ export const Sources = [
         ios_scheme: 'hulu',
         regions: ['US'],
     },
-    {
+    26: {
         id: 26,
         name: 'Amazon Prime',
         type: 'sub',
@@ -167,7 +166,7 @@ export const Sources = [
             'se',
         ],
     },
-    {
+    387: {
         id: 387,
         name: 'HBO MAX',
         type: 'sub',
@@ -178,7 +177,7 @@ export const Sources = [
         ios_scheme: 'hbomax',
         regions: ['US', 'AR', 'CL', 'CO', 'EC', 'MX', 'PE', 'BR'],
     },
-    {
+    372: {
         id: 372,
         name: 'Disney+',
         type: 'sub',
@@ -211,7 +210,7 @@ export const Sources = [
             'SE',
         ],
     },
-    {
+    371: {
         id: 371,
         name: 'AppleTV+',
         type: 'sub',
@@ -269,7 +268,7 @@ export const Sources = [
             'ZA',
         ],
     },
-    {
+    444: {
         id: 444,
         name: 'Paramount+',
         type: 'sub',
@@ -280,7 +279,7 @@ export const Sources = [
         ios_scheme: 'cbs',
         regions: ['US', 'AU', 'BR', 'CA'],
     },
-    {
+    388: {
         id: 388,
         name: 'Peacock',
         type: 'free',
@@ -291,7 +290,7 @@ export const Sources = [
         ios_scheme: 'peacock',
         regions: ['US'],
     },
-    {
+    389: {
         id: 389,
         name: 'Peacock Premium',
         type: 'sub',
@@ -315,4 +314,4 @@ export const Sources = [
     //     ios_scheme: 'hulu',
     //     regions: ['US'],
     // },
-];
+};

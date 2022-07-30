@@ -117,7 +117,7 @@ export default function Home() {
                 <FormControl component={'fieldset'} className={classes.filter}>
                     <FormLabel component={'legend'}>Platforms</FormLabel>
                     <FormGroup className={classes.filterList}>
-                        {Sources.map((source) => (
+                        {Object.values(Sources).map((source) => (
                             <FormControlLabel
                                 key={source.id}
                                 control={
