@@ -9,8 +9,9 @@ import {
     FormGroup,
     FormHelperText,
     FormLabel,
+    Grid,
+    GridProps,
     LinearProgress,
-    List,
     MenuItem,
     Select,
     Typography,
@@ -75,18 +76,18 @@ export default function Home() {
         else setTypes(types.filter((t) => t !== type));
     };
 
-    const modeStyles: React.CSSProperties =
+    const modeStyles: GridProps =
         viewMode === 'list'
             ? {
-                  flexDirection: 'column',
-                  justifyContent: 'center',
+                  direction: 'column',
+                  justify: 'flex-start',
                   alignItems: 'center',
               }
             : {
-                  flexDirection: 'row',
-                  justifyContent: 'flex-start',
+                  direction: 'row',
+                  justify: 'flex-start',
                   alignItems: 'flex-start',
-                  flexWrap: 'wrap',
+                  wrap: 'wrap',
               };
 
     return (
@@ -199,7 +200,11 @@ export default function Home() {
                     ))}
                 </Select>
             </Box>
-            <ButtonGroup variant={'outlined'} color={'secondary'}>
+            <ButtonGroup
+                variant={'outlined'}
+                color={'secondary'}
+                style={{ margin: '8px 0 24px 0' }}
+            >
                 <Button
                     variant={viewMode === 'list' ? 'contained' : undefined}
                     onClick={() => setViewMode('list')}
@@ -215,15 +220,7 @@ export default function Home() {
                     <ViewComfy />
                 </Button>
             </ButtonGroup>
-            <List
-                style={{
-                    marginTop: '16px',
-                    minHeight: '250px',
-                    width: '100%',
-                    display: 'flex',
-                    ...modeStyles,
-                }}
-            >
+            <Grid container spacing={2} {...modeStyles}>
                 {loading && (
                     <div
                         style={{
@@ -245,9 +242,9 @@ export default function Home() {
                     </Typography>
                 )}
                 {titles.map((title) => (
-                    <TitleCard title={title} mode={viewMode} />
+                    <TitleCard key={title.id} title={title} mode={viewMode} />
                 ))}
-            </List>
+            </Grid>
         </Box>
     );
 }
