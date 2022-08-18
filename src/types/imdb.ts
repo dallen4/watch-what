@@ -1,3 +1,5 @@
+import { Source } from './general';
+
 export type TitleType = 'movie' | 'tv';
 
 export type IMDbTitle = {
@@ -24,6 +26,9 @@ export type IMDbTitle = {
         url: string;
         official: boolean;
     };
+
+    videos: TitleVideoDetails[];
+    sources: Source[];
 };
 
 export type TitleVideoType = 'Trailer' | 'Behind the Scenes' | 'Bloopers';

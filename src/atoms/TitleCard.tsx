@@ -73,9 +73,14 @@ export const TitleCard = ({
                                     </Typography>
                                 </>
                             }
-                            secondary={title.details?.overview}
+                            secondary={
+                                title.details?.overview &&
+                                title.details?.overview.length > 325
+                                    ? title.details?.overview.substring(0, 324) + '...'
+                                    : title.details?.overview
+                            }
                         />
-                        <Box position={'relative'} display={'inline-flex'}>
+                        <Box marginTop={2} position={'relative'} display={'inline-flex'}>
                             <CircularProgress
                                 variant={'determinate'}
                                 value={(title.details?.vote_average || 0) * 10}

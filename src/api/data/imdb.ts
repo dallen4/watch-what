@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { IMDbTitle, TitleType, TitleVideoDetails, VideosResponse } from 'types/imdb';
 import redis from 'api/redis';
+import { getTitleSources } from './watchmode';
 
 const client = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
@@ -44,6 +45,7 @@ export const getTitleDetails = async (titleId: string) => {
     ];
 
     const videos = await getTitleVideos(details.id, type);
+    // const sources = await getTitleSources(details.id);
 
     const title: IMDbTitle = {
         ...details,
@@ -61,6 +63,7 @@ export const getTitleDetails = async (titleId: string) => {
             details.original_name ||
             details.original_title,
         videos,
+        // sources,
     };
 
     await redis.hmset(cacheKey, title);

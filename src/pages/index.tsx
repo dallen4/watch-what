@@ -40,7 +40,7 @@ export default function Home() {
     const [sortField, setSortField] = useState<string>(SortOptions[0]);
     const [viewMode, setViewMode] = useState<ViewMode>('list');
 
-    const { titles, loading, error } = useSearch({
+    const { titles, loading, canLoadMore, loadMore, loadingMore, error } = useSearch({
         query: '',
         sources,
         types,
@@ -50,10 +50,6 @@ export default function Home() {
             order: 'desc',
         },
     });
-
-    console.log(titles);
-    console.log(loading);
-    console.error(error);
 
     const onSourceToggle = (source: number) => {
         const sourceIndex = sources.indexOf(source);
@@ -221,7 +217,10 @@ export default function Home() {
                 </Button>
             </ButtonGroup>
             <Grid container spacing={2} {...modeStyles}>
-                {loading && (
+                {titles.map((title) => (
+                    <TitleCard key={title.id} title={title} mode={viewMode} />
+                ))}
+                {(loading || loadingMore) && (
                     <div
                         style={{
                             width: '100%',
@@ -241,9 +240,9 @@ export default function Home() {
                         No results found
                     </Typography>
                 )}
-                {titles.map((title) => (
-                    <TitleCard key={title.id} title={title} mode={viewMode} />
-                ))}
+                {canLoadMore && !(loading || loadingMore) && (
+                    <Button onClick={loadMore}>Load More</Button>
+                )}
             </Grid>
         </Box>
     );
