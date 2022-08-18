@@ -16,7 +16,7 @@ async function search(req: SearchRequest, res: ApiResponse) {
         res.status(405).end();
         return;
     }
-
+console.log(req.body);
     // check cache
     const stringifiedInput = JSON.stringify(req.body);
     const cacheKey = hash(stringifiedInput);

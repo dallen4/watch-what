@@ -18,8 +18,10 @@ export const getGenres = async () => {
     return response.data;
 };
 
+export const TITLES_PAGE_SIZE = 21;
+
 export const searchTitles = async (options: SearchInput) => {
-    const { query, sources, types, genres, sort_by } = options;
+    const { query, sources, types, genres, sort_by, page } = options;
 
     const response = await client.get<SearchResult>('/v1/list-titles/', {
         params: {
@@ -28,7 +30,8 @@ export const searchTitles = async (options: SearchInput) => {
             types: types.join(','),
             sort_by,
             regions: 'US',
-            limit: 21,
+            limit: TITLES_PAGE_SIZE,
+            page: page || 1,
         },
     });
 

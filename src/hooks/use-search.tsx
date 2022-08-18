@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
-import useSWR from 'swr';
+import { useMemo, useState } from 'react';
+import useSWRInfinite from 'swr/infinite';
 import { post } from '@lib/client';
-import { SearchInput, SearchResult, SortBy } from 'types/general';
+import { SearchInput, SearchResult, SortBy, TitleWithDetails } from 'types/general';
+import { TITLES_PAGE_SIZE } from 'api/data/watchmode';
 
 export type UseSearchInput = Omit<SearchInput, 'sort_by'> & {
     sort: {
@@ -21,6 +22,8 @@ const fetcher = async (path: string, args: SearchInput) => {
 export default function useSearch(options: UseSearchInput) {
     const { query, sources, types, genres, sort } = options;
 
+    const [loadingMore, setLoadingMore] = useState(false);
+
     const input: SearchInput = useMemo(() => {
         const { field, order } = sort;
 
@@ -37,13 +40,30 @@ export default function useSearch(options: UseSearchInput) {
         };
     }, [sources, genres, sort]);
 
-    const { data, error } = useSWR(['/api/search', input], fetcher);
+    const { data, error, setSize } = useSWRInfinite((index, prev) => {
+        if (prev && prev.length < TITLES_PAGE_SIZE) return null;
 
-    const titles = data?.titles ?? [];
+        return ['/api/search', { ...input, page: index + 1 }];
+    }, fetcher);
+
+    const loadMore = async () => {
+        setLoadingMore(true);
+        await setSize(size => ++size);
+        setLoadingMore(false);
+    };
+
+    const titles: TitleWithDetails[] =
+        data?.reduce((agg, curr) => [...agg, ...curr.titles], [] as TitleWithDetails[]) ??
+        [];
+
+    const canLoadMore = data && data[data.length - 1].titles.length === TITLES_PAGE_SIZE;
 
     return {
         titles,
         loading: !data && !error,
+        loadMore,
+        canLoadMore,
+        loadingMore,
         error,
     };
 }

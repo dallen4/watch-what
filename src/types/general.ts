@@ -30,6 +30,7 @@ export type SearchInput = {
     types: string[];
     genres: number[];
     sort_by: SortBy;
+    page?: number;
 };
 
 export type SearchRequest = ApiRequest<SearchInput>;
@@ -84,3 +85,5 @@ export type Title = {
 export type TitleWithDetails = Title & {
     details?: IMDbTitle;
 };
+
+
